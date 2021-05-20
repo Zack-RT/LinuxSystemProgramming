@@ -75,6 +75,8 @@ S_IRwXO|SIROTH\|SIwOTH\|S_IXOTH
 - 返回值
   - 如果出现错误，返回-1调用成功返回0
 
+# 文件与IO（二）
+
 ### read
 - 一旦有了与一个打开文件描述相连的文件描述符，只要该文件是用O_RDONLY或O_RDWR标志打并的，就可以用read()系统调用从该文件中读取字节
 - 函数原型:
@@ -120,3 +122,40 @@ base|文件位置
 SEEK_SET|从文件开始处计算偏移
 SEEK_CUR|从当前文件的偏移值计算偏移
 SEEK_END|从文件的结束处计算偏移
+
+## 目录访问
+
+### opendir
+- 功能说明:打开一个目录
+- 原型:
+  - DIR* opendir(char*pathname);
+- 参数
+  - pathname: 路径名
+- 返回值:打开成功，返回一个目录指针打开失败，则返回0
+
+### readdir
+- 功能说明:访问指定目录中下一个连接的细节
+- 原型:
+  - struct dirent* readdir(DIR *dirptr);
+- 参数
+  - 目录指针
+- 返回值:返回一个指向dirent结构的指针，它包含指定目录中下一个连接的细节; 没有更多连接时,返回0
+```
+struct dirent {
+    ino_t          d_ino;       /* Inode number */
+    off_t          d_off;       /* Not an offset; see below */
+    unsigned short d_reclen;    /* Length of this record */
+    unsigned char  d_type;      /* Type of file; not supported
+                                  by all filesystem types */
+    char           d_name[256]; /* Null-terminated filename */
+};
+```
+
+### chmode和fchmode
+- 功能说明:用来改变给定路径名pathname的文件的权限位
+
+### chown和fchown
+- 功能说明:用来改变文件所有者的识别号(ownerid)或者它的用户组识别号(group lD)
+
+# 文件与IO（三）
+

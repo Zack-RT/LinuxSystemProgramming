@@ -18,10 +18,10 @@ $(BUILD_DIR):
 	[ -d $@ ] || mkdir $@
 
 $(BIN):%:%.o
-	$(CC) -o $@ $(CFLAGS) $?
+	$(CC) -o $@ $(CFLAGS) $<
 
 $(OBJ):%.o:%.c
-	$(CC) -c -o $(addprefix $(BUILD_DIR)/, $@) $(CFLAGS) $?
+	$(CC) -c -o $(addprefix $(BUILD_DIR)/, $@) $(CFLAGS) $<
 
 .PHONY:clean
 clean:
