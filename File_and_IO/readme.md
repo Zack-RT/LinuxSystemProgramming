@@ -188,4 +188,33 @@ struct stat {
 #define st_ctime st_ctim.tv_sec
 };
 ```
-### 
+
+### 相关函数
+```
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int stat(const char *pathname, struct stat *statbuf);
+int fstat(int fd, struct stat *statbuf);
+int lstat(const char *pathname, struct stat *statbuf);
+```
+
+# 文件与IO（四）
+
+## 文件共享
+
+### 打开文件内核数据结构
+![](mding/QQ截图20210527170545.png)
+
+### 一个进程两次打开同一个文件
+![](mding/QQ截图20210527171053.png)
+
+### 两个进程打开同一个文件
+![](mding/QQ截图20210527172332.png)
+
+## 复制文件描述符（dup, dup2, fcntl）
+![](mding/QQ截图20210527172344.png)
+- dup: 复制文件描述符，新的描述符为描述符表当前空闲的最小值处
+- dup2：强制使用一个指定的描述符（如果非空闲先close再dup）
+- fcntl(fd,F_DUPFD,fd_start); 从fd_start开始搜索可用的最小文件描述符。
