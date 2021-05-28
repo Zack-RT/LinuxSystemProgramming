@@ -218,3 +218,44 @@ int lstat(const char *pathname, struct stat *statbuf);
 - dup: 复制文件描述符，新的描述符为描述符表当前空闲的最小值处
 - dup2：强制使用一个指定的描述符（如果非空闲先close再dup）
 - fcntl(fd,F_DUPFD,fd_start); 从fd_start开始搜索可用的最小文件描述符。
+
+
+# 文件与IO（五）
+
+## fcntl函数
+```
+#include <unistd.h>
+#include <fcntl.h>
+
+int fcntl(int fd, int cmd, ... /* arg */ );
+```
+
+## fcntl常用操作
+- 复制文件描述符
+  - F_DUPFD (long)
+- 文件描述符标志
+  - F_GETFD (void)
+  - F_SETFD (long)
+- 文件状态标志
+  - F_GETFL (void)
+  - F_SETFL (long)
+- 文件锁
+  - F_GETLK
+  - F_SETLK，F_SETLKW
+
+## 文件锁
+### 文件锁结构体
+```
+struct flock {
+    ...
+    short l_type;    /* Type of lock: F_RDLCK,
+                        F_WRLCK, F_UNLCK */
+    short l_whence;  /* How to interpret l_start:
+                        SEEK_SET, SEEK_CUR, SEEK_END */
+    off_t l_start;   /* Starting offset for lock */
+    off_t l_len;     /* Number of bytes to lock */
+    pid_t l_pid;     /* PID of process blocking our lock
+                        (set by F_GETLK and F_OFD_GETLK) */
+    ...
+}
+```

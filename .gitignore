@@ -1,5 +1,5 @@
 */build/*
 *.out
 *.o
-!./build/makefile
 *.txt
+.vscode/
