@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 {
     signal(SIGCHLD, SIG_IGN);
     printf("before fork pid = %d\n", getpid());
-    pid_t pid = fork();
+    pid_t pid = vfork();
     if(pid < 0){
         ERR_EXIT("fork");
     }
@@ -27,6 +27,8 @@ int main(int argc, char **argv)
         printf("this is parent, pid=%d, child pid = %d\n", getpid(), pid);
     }
     else if(pid == 0){
+        char *const args[] = {"ps", NULL};
+        execve("/bin/ps", args, NULL);
         printf("this is child, pid = %d, parent pid = %d\n", getpid(), getppid());
     }
     else{

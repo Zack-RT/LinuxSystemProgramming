@@ -133,3 +133,33 @@
 - 如果一个进程要修改自己的那份资源的“副本”，那么就会复制那份资源。这就是写时复制的含义
 
 # 进程（四）
+
+## fork之后父子进程共享文件
+![](mdimg/QQ截图20210528161353.png)
+
+## fork与vfork
+- 在fork还没实现copy on write之前。Unix设计者很关心fork之后立刻执行exec所造成的地址空间浪费，所以引入了vfork系统调用。
+- vfork有个限制，子进程必须立刻执行_exit或者exec函数。否则可能出现Segmentation fault。
+- 即使fork实现了copy on write，效率也没有vfork高，但是我们不推荐使用vfork，因为几乎每一个vfork的实现，都或多或少存在一定的问题。
+
+## exit与_exit
+- exit为c库的函数
+- _exit为系统调用
+![](mdimg/QQ截图20210529153156.png)
+
+## atexit
+- atexit可以注册终止处理程序，ANSI C规定最多可以注册32个终止处理程序。
+- 终止处理程序的调用与注册次序相反
+```
+int atexit(void (*function) (void));
+```
+注意：atexit也是由C库提供的函数，若是通过_exit退出，则不会调用注册函数。
+ 
+## execve替换进程映像(加载程序)
+```
+#include <unistd.h>
+
+int execve(const char *pathname, char *const argv[],
+          char *const envp[]);
+```
+- 用于替换进程映像
