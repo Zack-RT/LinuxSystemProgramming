@@ -211,3 +211,26 @@ struct sigaction {
 
 ## sigaction示例
 [07sigaction](07sigaction.c)
+[08sigmask](08sigmask.c)
+
+# 信号（六）
+
+## sigqueue函数
+- 功能:新的发送信号系统调用，主要是针对实时信号提出的支持信号带有参数,与函数sigaction()配合使用。
+- 原型:
+  - int sigqueue(pid_ _t pid, int sig, const unionsigval value);
+- 参数
+  - sigqueue的第一个参数是指定接收信号的进程id,第二个参数确定即将发送的信号，第三个参数是一个联合数据结构union sigval指定了信号传递的参数，即通常所说的4字节值。
+- 返回值：成功返回0,失败返回-1
+- sigqueue()比kill()传递了更多的附加信息，但sigqueue()只能向一个进程发送信号，而不能发送信号给一个进程组。
+```
+union sigval {
+    int   sival_int;
+    void *sival_ptr;
+};
+```
+
+## sigval联合体
+
+
+## sigqueue示例.
