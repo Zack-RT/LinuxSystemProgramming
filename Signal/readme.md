@@ -182,3 +182,32 @@ value|功能
 SIG_BLOCK|set包含了我们希望添加到当前信号屏蔽字的信号，相当于mask=mask|set
 SIG_UNBLOCK|set包含了我们希望从当前信号屏蔽字中解除阻塞的信号，相当于mask=rmask&~set
 SIG SETMASK|设置当前信号屏蔽字为set所指向的值，相当于mask=set
+
+
+# 信号（五）
+## sigaction函数
+- 功能:sigaction函数用于改变进程接收到特定信号后的行为
+- 原型:
+  - int sigaction(int signum, const struct sigaction *act, const struct sigaction *old);
+- 参数
+  - 该函数的第一个参数为信号的值，可以为除SIGKILL及SIGSTOP外的任何一个特定有效的信号(为这两个信号定义自己的处理函数，将导致信号安装错误)
+  - 第二个参数是指向结构sigaction的一个实例的指针，在结构sigaction的实例中，指定了对特定信号的处理，可以为空，进程会以缺省方式对信号处理
+  - 第三个参数oldact指向的对象用来保存原来对相应信号的处理，可指定oldact为NULL。
+- 返回值:函数成功返回0，失败返回-1
+
+## sigaction结构体
+第二个参数sigaction最为重要，其中包含了对指定信号的
+处理、信号所传递的信息、信号处理函数执行过
+程中应屏蔽掉哪些函数等等。
+```
+struct sigaction {
+    void     (*sa_handler)(int); // 根据新老信号的不同sa_handler,sa_sigaction二选一
+    void     (*sa_sigaction)(int, siginfo_t *, void *);
+    sigset_t   sa_mask; // 信号屏蔽字
+    int        sa_flags; // 改变信号的行为，具体看man
+    void     (*sa_restorer)(void); // 不使用
+};
+```
+
+## sigaction示例
+[07sigaction](07sigaction.c)
