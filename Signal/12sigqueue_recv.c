@@ -48,7 +48,8 @@ int main()
 
 void handler(int sig)
 {
-    printf("recv a sig=%d", sig);
+    printf("recv a sig=%d\n", sig);
+    fflush(stdout);
     if(sig == SIGUSR1){
         sigset_t s;
         sigemptyset(&s);
