@@ -223,6 +223,8 @@ struct sigaction {
   - sigqueue的第一个参数是指定接收信号的进程id,第二个参数确定即将发送的信号，第三个参数是一个联合数据结构union sigval指定了信号传递的参数，即通常所说的4字节值。
 - 返回值：成功返回0,失败返回-1
 - sigqueue()比kill()传递了更多的附加信息，但sigqueue()只能向一个进程发送信号，而不能发送信号给一个进程组。
+
+## sigval联合体
 ```
 union sigval {
     int   sival_int;
@@ -230,7 +232,51 @@ union sigval {
 };
 ```
 
-## sigval联合体
-
-
 ## sigqueue示例.
+- [通过信号的IPC_发送端](09sigqueue_send.c)
+- [通过信号的IPC_接收端](10sigqueue_recv.c)
+- [可靠信号与不可靠信号的对比_发送端](11sigqueue_send.c)
+- [可靠信号与不可靠信号的对比_接收端](12sigqueue_recv.c)
+
+
+# 信号（七）
+
+## 三种不同精度的睡眠
+秒、毫秒、纳秒
+```
+unsigned int sleep(unsigned int seconds);
+int usleep(useconds_t usec);
+int nanosleep(const struct timespec *req, struct timespec *rem);
+```
+
+## 三种时间结构
+秒、毫秒、纳秒
+'''
+typedef long time_t;
+struct timeval {
+    time_t      tv_sec;         /* seconds */
+    suseconds_t tv_usec;        /* microseconds */
+};
+struct timespec {
+    time_t tv_sec;        /* seconds */
+    long   tv_nsec;       /* nanoseconds */
+};
+
+'''
+
+## setitimer
+
+- 功能setitimer()比alarm功能强大，支持3种类型的定时器，且一次调用可以多次产生信号
+- 原型:
+  - int setitimer(int which, const struct itimerval *value, struct itimerval *ovalue));
+- 参数
+  - 第一个参数which指定定时器类型
+  - 第二个参数是结构itimerval的一个实例，结构itimerval形式
+  - 第三个参数可不做处理。
+- 返回值:成功返回0失败返回-1
+
+- ITIMER_REAL: 经过指定的时间后，内核将发送SIGALRM信号给本进程)
+-  ITIMER_VIRTUAL :程序在用户空间执行指定的时间后，内核将发送SIGVTALRM信号给本进程
+- ITIMER_PROF :进程在内核空间中执行时，时间计数会减少，通常与ITIMER_VIRTUAL共用，代表进程在用户空间与内核空间中运行指定时间后，内核将发送SIGPROF信号给本进程。
+
+## getitimer
