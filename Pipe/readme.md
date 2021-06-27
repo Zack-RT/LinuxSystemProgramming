@@ -21,3 +21,18 @@
 # 管道示例程序
 - [使用pipe函数](01pipe.c)
 - [模拟 ls | wc -w](02pipe.c)
+
+# 管道（二）
+
+## 管道的读写规则
+- 当没有数据可读时
+  - 0_N0NBL0CK disable: read调用阻塞，即进程暂停执行，一直等到有数据来到为止。
+  - 0_ NONBLOCK enable: read调用返回-1，errno值为EAGAIN。
+- 如果所有管道写端对应的文件描述符被关闭，则read返回0
+- 如果所有管道读端对应的文件描述符被关闭，则write操作会产生信号SIGPIPE
+- 当要写入的数据量不大于PIPE_BUF时， linux将保证写入的原子性
+- 当要写入的数据量大于PIPE_BUF时，linux将不再保证写入的原子性
+
+## 验证管道的大小
+- 思路：创建一个pipe，不断的其中写数据，如果管道满了，write默认会阻塞。
+- 代码：[04pipe_size.c](04pipe_size.c)
